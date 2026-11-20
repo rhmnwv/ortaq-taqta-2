@@ -19,8 +19,61 @@ body.presenter{background:#102b32;color:#fff}
 .presenter #joinLink{max-width:100%}
 @media(min-width:900px){.presenter main{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,30%);gap:1rem 2rem}.presenter #board{grid-column:2;grid-row:1 / span 2}.presenter #task,.presenter #waiting{grid-column:1;grid-row:1}.presenter #status{grid-column:1 / -1}}
 .start-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:1rem}.start-grid a{display:grid;gap:.5rem;padding:1rem;border:2px solid #52756a;border-radius:1rem;color:#14343b;background:#e0f3ea;text-decoration:none}.start-grid a:hover strong{text-decoration:underline}.start-grid strong{font-size:1.2em}
+
+:root{--ink:#142d45;--muted:#425a70;--accent:#145b54;--line:#d3e0e6;--surface:#f4f8fb}
+body{background:#edf3f8;color:var(--ink)}
+header{background:#132c44;min-height:72px}
+header .brand{font-weight:780;font-size:1.35rem;color:white;text-decoration:none}
+nav{gap:.25rem}
+nav a{text-decoration:none;padding:.52rem .8rem}
+nav a:hover{background:#2b4761}
+nav a[aria-current]{background:#d6f5e8;color:#14343b}
+main{width:min(calc(100% - 2rem),1000px);box-shadow:0 14px 42px #17344d12;border-color:var(--line);margin:2rem auto}
+h1,h2,h3,h4{line-height:1.2}
+h2{font-size:1.48em} h3{font-size:1.3em} h4{font-size:1.12em}
+h3,h4{margin:1.15em 0 .45em}
+p{margin:.55em 0 .9em}
+button{background:var(--accent);font-weight:650}
+button:hover:not(:disabled){filter:brightness(.94)}
+button.secondary{background:#f1f7fa;color:var(--ink);border-color:#9bb3c3}
+button[aria-pressed=true]{background:#173c57;color:white}
+button:disabled{opacity:.65}
+select{max-width:100%;border-color:#879faf}
+input{display:block;border-color:#879faf}
+label{font-weight:650}
+label select{display:block;margin-top:.35rem}
+a{color:#155850;text-underline-offset:3px}
+.start-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:1.7rem}
+.start-grid a{padding:1.25rem;background:var(--surface);border:1px solid var(--line);border-top:4px solid #28776a;color:var(--ink)}
+.start-grid a:hover{background:#e6f2f0;border-color:#639589}
+.start-grid span{color:var(--muted);font-size:1rem}
+.lesson{padding:clamp(1rem,3vw,1.6rem);background:#f2f8f6;border-color:#c8ded5}
+.lesson h3{margin-top:0} .lesson ol,#explanationSteps{padding-inline-start:1.6em}
+.lesson li,#explanationSteps li{margin:.55em 0}
+details{margin:1rem 0} summary{cursor:pointer;font-weight:650}
+th{background:var(--surface)}
+#settings{margin:.65rem 0 1.15rem}
+#task{border-top:1px solid var(--line);margin-top:1.15rem;padding-top:1.15rem}
+#taskTitle{margin-top:0}
+#explanationIntro{max-width:62ch}
+#answerIdentity{margin-top:1.25rem}
+#answerIdentity input{margin:.35rem 0 1rem}
+.choices{align-items:stretch}
+.choices button{background:#edf5f8;border-color:#90aaba;color:#122c44}
+.choices button[aria-pressed=true]{background:#173c57;color:white}
+#status:not(:empty),#waiting{padding:.75rem 1rem;background:#e6f2f0;border-radius:.65rem}
+.presenter #task{border:0;margin:0;padding:0}
+.presenter #join{background:#e8f4ef}
+.presenter #joinLink{font-size:.95rem}
+.presenter #total,.presenter #counts{background:#e8f4ef;padding:.55em .8em;border-radius:.6rem}
+.contrast header,.contrast main,.contrast #task,.contrast #status,.contrast #waiting{background:#000;color:#fff;border-color:#fff}
+.contrast button,.contrast .choices button{background:#000;color:#fff;border-color:#fff}
+.contrast button[aria-pressed=true]{background:#fff;color:#000}
+.contrast nav a,.contrast .brand{color:white}
+.contrast nav a[aria-current]{background:white;color:black}
+@media(max-width:720px){main{margin:1rem auto;padding:1.15rem}.start-grid{grid-template-columns:1fr}.start-grid a{padding:1rem}.row{align-items:stretch}#library label,#auth label{width:100%}#library select,#auth input{width:100%}#studentActions>button{margin-bottom:.35rem}}
 </style>
-<header><strong>Ортақ тақта</strong><nav aria-label="Экранды таңдау"><a href="/">Басты бет</a><a href="/?view=teacher">Мұғалім</a><a href="/?view=board">Тақта</a><a href="/?view=student">Оқушы</a></nav></header>
+<header><a class="brand" href="/">Ортақ тақта</a><nav aria-label="Экранды таңдау"><a href="/">Басты бет</a><a href="/?view=teacher">Мұғалім</a><a href="/?view=board">Тақта</a><a href="/?view=student">Оқушы</a></nav></header>
 <main>
 <section id="home" hidden>
 <h1>Ортақ тақта</h1>
@@ -32,9 +85,9 @@ body.presenter{background:#102b32;color:#fff}
 </div>
 </section>
 <section id="teacher" hidden>
-<h1>Мұғалім экраны</h1>
+<h1>Мұғалім кабинеті</h1>
 <form id="auth">
-<h2 id="authTitle">Мұғалім кабинеті</h2>
+<h2 id="authTitle">Кіру</h2>
 <p id="authHint"></p>
 <div class="row">
 <label>Аты-жөніңіз<input id="teacherName" required minlength="2" maxlength="80" autocomplete="username"></label>
@@ -57,8 +110,8 @@ body.presenter{background:#102b32;color:#fff}
 <h4>Сабақты түсіндіру</h4>
 <p>Бөлімдері әртүрлі бөлшектерді салыстыру үшін оларды ортақ бөлімге келтіреміз. Содан кейін алымдарын салыстырамыз.</p>
 <ol><li>Екі бөлімге ортақ еселік тап. Мысалы, 3 пен 5 үшін ортақ бөлім — 15.</li><li>Бөлшектерді ортақ бөлімге келтір. 2/3 = 10/15, ал 3/5 = 9/15.</li><li>Алымдарды салыстыр. 10 &gt; 9, сондықтан 2/3 &gt; 3/5.</li></ol>
-<p>Оқушы экранында ірі мәтін, жоғары контраст, қадамдық нұсқа және дыбыстау бар. Ым тілі бөлімі демо түрінде көрсетіледі.</p>
-<div class="row"><button id="publishExplanation" type="button">Түсіндіруді тақта мен планшетке жіберу</button><a href="/?view=board" target="ortaq-board">Тақтаны бөлек ашу</a></div><h4>Түсінгенін тексеру</h4>
+<p>Оқушы экранында ірі мәтін, жоғары контраст, қадамдық нұсқа және дыбыстау бар. Түсіндірменің ым тілі бейнесі бар.</p>
+<div class="row"><button id="publishExplanation" type="button">Түсіндірмені көрсету</button><a href="/?view=board" target="ortaq-board">Тақтаны ашу</a></div><h4>Түсінгенін тексеру</h4>
 <div class="row" id="lessonQuestions">
 <button type="button" data-left="3/4" data-right="2/3">1-сұрақты жіберу · 3/4 және 2/3</button>
 <button type="button" data-left="1/2" data-right="2/4">2-сұрақты жіберу · 1/2 және 2/4</button>
@@ -81,8 +134,8 @@ body.presenter{background:#102b32;color:#fff}
 </aside></section>
 <section id="student" hidden>
 <h1>Оқушы экраны</h1>
-<label for="name">Атың немесе мұғалім берген лақап атың</label><input id="name" maxlength="40" autocomplete="off">
-<h2>Қолжетімділік</h2>
+
+<h2>Оқу баптаулары</h2>
 <div class="row" id="settings"><button class="secondary" aria-pressed="false" data-setting="large">Ірі мәтін</button><button class="secondary" aria-pressed="false" data-setting="contrast">Жоғары контраст</button><button class="secondary" aria-pressed="false" data-setting="steps">Қадаммен оқу</button></div>
 </section>
 <p id="waiting">Мұғалім сұрақ жібергенде осы жерде ашылады.</p>
@@ -95,12 +148,12 @@ body.presenter{background:#102b32;color:#fff}
 <button id="listen" class="secondary">Тапсырманы тыңдау</button>
 <button id="signDemo" class="secondary" aria-expanded="false" aria-controls="signPanel">Ым тілінде көру · демо</button>
 <div id="signPanel" hidden style="margin:1rem 0;padding:1rem;border:2px solid currentColor;border-radius:1rem">
-<strong>Ым тілі бейнесінің имитациясы</strong>
+<video id="signVideo" controls playsinline preload="none" aria-label="Сабақтың ым тіліндегі түсіндірмесі" style="display:block;width:min(100%,360px);margin:auto" hidden></video><div id="signPlaceholder"><strong>Ым тілі бейнесінің имитациясы</strong>
 <p>Бұл демо бейне ойнатқыштың орнын көрсетеді. Нақты ым тілі аудармасы тіркелгенде осы жерде ашылады.</p>
 <p id="signCaption" aria-live="polite"></p>
-<button id="signNext" class="secondary">Келесі кадр</button>
+<button id="signNext" class="secondary">Келесі кадр</button></div>
 </div>
-<p id="choosePrompt">Жауабыңды таңда.</p>
+<div id="answerIdentity"><label for="name">Атың немесе мұғалім берген лақап атың</label><input id="name" maxlength="40" autocomplete="off"></div><p id="choosePrompt">Жауабыңды таңда.</p>
 <div class="row choices" id="choices"><button value="<"><b aria-hidden="true">&lt;</b>Кіші</button><button value="="><b aria-hidden="true">=</b>Тең</button><button value=">"><b aria-hidden="true">&gt;</b>Үлкен</button></div>
 </div>
 <div id="boardResults" hidden><p id="total" role="status"></p><p id="counts" hidden></p></div>
@@ -109,13 +162,3 @@ body.presenter{background:#102b32;color:#fff}
 </main>
 <script src="/demo.js"></script><script src="/app.js"></script>
 </html>
-
-
-
-
-
-
-
-
-
-

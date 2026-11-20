@@ -1,5 +1,5 @@
 import http from 'node:http';
-import { readFileSync } from 'node:fs';
+import { createReadStream, readFileSync, statSync } from 'node:fs';
 import { networkInterfaces } from 'node:os';
 import { randomUUID, scryptSync, timingSafeEqual } from 'node:crypto';
 
@@ -45,6 +45,30 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'GET' && path === '/') {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
     return res.end(page);
+  }
+  if (['GET', 'HEAD'].includes(req.method) && path === '/media/sign-language.mp4') {
+    const file = new URL('./web-demo/media/sign-language.mp4', import.meta.url);
+    const size = statSync(file).size;
+    const headers = { 'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes' };
+    const range = req.headers.range;
+    let start = 0;
+    let end = size - 1;
+    if (range) {
+      const match = /^bytes=(\d*)-(\d*)$/.exec(range);
+      if (match && (match[1] || match[2])) {
+        start = match[1] ? Number(match[1]) : Math.max(0, size - Number(match[2]));
+        end = match[1] && match[2] ? Math.min(end, Number(match[2])) : end;
+      }
+      if (!match || (!match[1] && !match[2]) || !Number.isSafeInteger(start) || start >= size || end < start || (!match[1] && Number(match[2]) === 0)) {
+        res.writeHead(416, { 'Content-Range': 'bytes */' + size });
+        return res.end();
+      }
+      headers['Content-Range'] = 'bytes ' + start + '-' + end + '/' + size;
+    }
+    headers['Content-Length'] = end - start + 1;
+    res.writeHead(range ? 206 : 200, headers);
+    if (req.method === 'HEAD') return res.end();
+    return createReadStream(file, { start, end }).on('error', () => res.destroy()).pipe(res);
   }
   if (req.method === 'GET' && path === '/app.js') {
     res.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8', 'Cache-Control': 'no-store' });
@@ -126,10 +150,3 @@ server.listen(8080, '0.0.0.0', () => {
   }
   console.log('Мұғалім кілті: ' + teacherKey);
 });
-
-
-
-
-
-
-

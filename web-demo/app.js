@@ -94,6 +94,8 @@ function update(state) {
     byId('explanationText').hidden = !activeLesson;
     byId('choices').hidden = Boolean(activeLesson);
     byId('choosePrompt').hidden = Boolean(activeLesson);
+    byId('answerIdentity').hidden = Boolean(activeLesson);
+    byId('listen').textContent = activeLesson ? 'Түсіндірмені тыңдау' : 'Сұрақты тыңдау';
     byId('boardResults').hidden = view !== 'board' || Boolean(activeLesson);
     updateReadingMode();
     if (activeLesson) {
@@ -231,7 +233,7 @@ byId('publishExplanation').addEventListener('click', () => {
   if (board) board.focus();
   return teacherAction('/explanation', {}, board
     ? 'Түсіндіру тақта мен планшеттерге жіберілді.'
-    : 'Түсіндіру жіберілді. Тақтаны ашу үшін сабақтағы «Тақтаны бөлек ашу» сілтемесін басыңыз.');
+    : 'Түсіндіру жіберілді. Тақтаны ашу үшін сабақтағы «Тақтаны ашу» сілтемесін басыңыз.');
 });
 
 byId('listen').addEventListener('click', () => {
@@ -284,7 +286,19 @@ function setSignPanel(open) {
   byId('signPanel').hidden = !open;
   byId('signDemo').setAttribute('aria-expanded', String(open));
   signIndex = 0;
-  if (open) showSignFrame();
+  const video = byId('signVideo');
+  byId('signDemo').textContent = activeLesson ? 'Ым тілінде көру' : 'Ым тілінде көру · демо';
+  byId('signPlaceholder').hidden = Boolean(activeLesson);
+  video.hidden = !activeLesson;
+  if (!open) {
+    video.pause();
+    return;
+  }
+  if (activeLesson) {
+    if (!video.getAttribute('src')) video.src = '/media/sign-language.mp4';
+  } else {
+    showSignFrame();
+  }
 }
 
 byId('signDemo').addEventListener('click', () => setSignPanel(byId('signPanel').hidden));
@@ -369,8 +383,3 @@ byId('lessonQuestions').addEventListener('click', async event => {
     buttons.forEach(item => { item.disabled = false; });
   }
 });
-
-
-
-
-
