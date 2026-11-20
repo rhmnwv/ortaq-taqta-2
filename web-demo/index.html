@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="kk">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ортақ тақта</title>
+<style>
+*{box-sizing:border-box} body{margin:0;background:#edf4f4;color:#102b32;font:1.1rem/1.55 system-ui,sans-serif} header{background:#14343b;color:white;padding:1rem max(5vw,1rem);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem} header strong{font-size:1.4rem} nav{display:flex;gap:.8rem;flex-wrap:wrap} nav a{color:white;padding:.3rem .6rem;border-radius:.5rem} nav a[aria-current]{background:#d6f5e8;color:#14343b} main{width:min(96%,850px);margin:2rem auto;padding:clamp(1rem,5vw,3rem);background:white;border:1px solid #bfcdcf;border-radius:1.4rem} h1{font-size:clamp(1.8rem,5vw,3rem);line-height:1.1;margin-top:0} h2{margin-bottom:.25em} .row{display:flex;flex-wrap:wrap;gap:.75rem;align-items:end} button,input{font:inherit;border-radius:.65rem;min-height:48px;padding:.55rem .85rem} input{width:min(100%,24rem);border:2px solid #607579;background:Canvas;color:CanvasText} .fraction-input{width:8rem} label{display:block} select{font:inherit;min-height:48px;padding:.5rem;border-radius:.6rem;border:2px solid #607579;background:white;color:#102b32} .lesson{padding:1rem;margin:1rem 0;background:#edf8f3;border:1px solid #a9c9bc;border-radius:1rem} button{background:#17604e;color:white;border:2px solid transparent;cursor:pointer} button.secondary{background:#f1f7f5;color:#14343b;border-color:#52756a} button[aria-pressed=true]{background:#14343b;color:white} button:disabled{opacity:.55;cursor:default} :focus-visible{outline:3px solid #b45600;outline-offset:4px} .equation{display:flex;align-items:center;justify-content:center;gap:clamp(.8rem,6vw,4rem);background:#e0f3ea;padding:.6em;border-radius:1rem;font-size:clamp(2.4rem,8vw,5rem);font-weight:750;margin:1rem 0} .fraction{line-height:1.05;text-align:center;display:grid} .fraction span:first-child{border-bottom:.075em solid;padding:0 .15em .08em} .fraction span:last-child{padding-top:.08em} .choices button{flex:1;min-width:85px;font-size:1.2em} .choices b{display:block;font-size:1.8em;line-height:1.2} table{width:100%;border-collapse:collapse} th,td{text-align:left;border-bottom:1px solid #8fa6a6;padding:.5rem}.large{font-size:1.55rem}.large .equation{font-size:clamp(3rem,11vw,6rem)}.contrast{background:#000;color:#fff}.contrast main,.contrast .equation,.contrast button,.contrast header{background:#000;color:#fff;border-color:#fff}.contrast button[aria-pressed=true]{background:#fff;color:#000}.contrast :focus-visible{outline-color:#ffec36} [hidden]{display:none!important}
+body.presenter{background:#102b32;color:#fff}
+.presenter header{display:none}
+.presenter main{width:min(96%,1440px);margin:1rem auto;padding:clamp(1rem,3vw,3rem);background:#fff;color:#102b32}
+.presenter main h1{font-size:clamp(1.5rem,3vw,2.5rem)}
+.presenter #task{font-size:clamp(1.15rem,2.25vw,2.2rem)}
+.presenter #taskTitle{line-height:1.15}
+.presenter #explanationSteps li{margin:.35em 0}
+.presenter #join{background:#e0f3ea;padding:1rem;border-radius:1rem}
+.presenter #join img{max-width:100%;background:white}
+.presenter #join h2{margin-top:0}
+.presenter #join p{margin:.3rem 0}
+.presenter #joinLink{max-width:100%}
+@media(min-width:900px){.presenter main{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,30%);gap:1rem 2rem}.presenter #board{grid-column:2;grid-row:1 / span 2}.presenter #task,.presenter #waiting{grid-column:1;grid-row:1}.presenter #status{grid-column:1 / -1}}
+.start-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:1rem}.start-grid a{display:grid;gap:.5rem;padding:1rem;border:2px solid #52756a;border-radius:1rem;color:#14343b;background:#e0f3ea;text-decoration:none}.start-grid a:hover strong{text-decoration:underline}.start-grid strong{font-size:1.2em}
+</style>
+<header><strong>Ортақ тақта</strong><nav aria-label="Экранды таңдау"><a href="/">Басты бет</a><a href="/?view=teacher">Мұғалім</a><a href="/?view=board">Тақта</a><a href="/?view=student">Оқушы</a></nav></header>
+<main>
+<section id="home" hidden>
+<h1>Ортақ тақта</h1>
+<p>Үш экранды бір браузердің бөлек қойындыларында ашып көріңіз. Әр келуші өз браузерінде дербес демо жүргізеді.</p>
+<div class="start-grid">
+<a href="/?view=teacher"><strong>Мұғалім кабинеті</strong><span>Дайын сабақты таңдау, тапсырма жіберу және жеке жауаптарды көру.</span></a>
+<a href="/?view=board"><strong>Интерактивті тақта</strong><span>Сабақты толық экранда көрсету және қосылуға арналған QR-кодты шығару.</span></a>
+<a href="/?view=student"><strong>Оқушы экраны</strong><span>Сабақты өзіңізге ыңғайлы түрде ашу және жауап беру.</span></a>
+</div>
+</section>
+<section id="teacher" hidden>
+<h1>Мұғалім экраны</h1>
+<form id="auth">
+<h2 id="authTitle">Мұғалім кабинеті</h2>
+<p id="authHint"></p>
+<div class="row">
+<label>Аты-жөніңіз<input id="teacherName" required minlength="2" maxlength="80" autocomplete="username"></label>
+<label>Құпиясөз<input id="password" type="password" required minlength="6" maxlength="100"></label>
+<button id="authSubmit">Кіру</button>
+</div>
+</form>
+<div id="controls" hidden>
+<p id="welcome"></p><h2>Дайын сабақтар</h2>
+<form id="library">
+<div class="row">
+<label>Сынып<select id="grade" required><option value="">Сыныпты таңдаңыз</option><option value="5">5-сынып</option><option value="6">6-сынып</option><option value="7">7-сынып</option><option value="8">8-сынып</option></select></label>
+<label>Пән<select id="subject" required disabled><option value="">Пәнді таңдаңыз</option><option value="math">Математика</option><option value="geometry">Геометрия</option></select></label>
+<label>Тақырып<select id="topic" required disabled><option value="">Тақырыпты таңдаңыз</option></select></label>
+</div>
+</form>
+<p id="catalogEmpty" hidden>Бұл сынып пен пәнге арналған дайын сабақ демоға әлі қосылған жоқ.</p><article id="lesson" class="lesson" hidden>
+<h3>Жай бөлшектерді салыстыру</h3>
+<p><strong>Оқу мақсаты</strong> — екі жай бөлшекті ортақ бөлімге келтіріп салыстыру.</p>
+<h4>Сабақты түсіндіру</h4>
+<p>Бөлімдері әртүрлі бөлшектерді салыстыру үшін оларды ортақ бөлімге келтіреміз. Содан кейін алымдарын салыстырамыз.</p>
+<ol><li>Екі бөлімге ортақ еселік тап. Мысалы, 3 пен 5 үшін ортақ бөлім — 15.</li><li>Бөлшектерді ортақ бөлімге келтір. 2/3 = 10/15, ал 3/5 = 9/15.</li><li>Алымдарды салыстыр. 10 &gt; 9, сондықтан 2/3 &gt; 3/5.</li></ol>
+<p>Оқушы экранында ірі мәтін, жоғары контраст, қадамдық нұсқа және дыбыстау бар. Ым тілі бөлімі демо түрінде көрсетіледі.</p>
+<div class="row"><button id="publishExplanation" type="button">Түсіндіруді тақта мен планшетке жіберу</button><a href="/?view=board" target="ortaq-board">Тақтаны бөлек ашу</a></div><h4>Түсінгенін тексеру</h4>
+<div class="row" id="lessonQuestions">
+<button type="button" data-left="3/4" data-right="2/3">1-сұрақты жіберу · 3/4 және 2/3</button>
+<button type="button" data-left="1/2" data-right="2/4">2-сұрақты жіберу · 1/2 және 2/4</button>
+</div>
+<details><summary>Жауап кілті</summary><ol><li>3/4 &gt; 2/3</li><li>1/2 = 2/4</li></ol></details>
+
+</article>
+<details><summary>Өз тапсырмаңызды енгізу</summary>
+<form id="questionForm"><h2>Жаңа тапсырма</h2><p>Бөлшектерді 3/4 түрінде енгізіңіз.</p><div class="row"><label>Бірінші бөлшек<input required class="fraction-input" name="left" value="3/4" pattern="[0-9]{1,3}/[1-9][0-9]{0,2}"></label><label>Екінші бөлшек<input required class="fraction-input" name="right" value="2/3" pattern="[0-9]{1,3}/[1-9][0-9]{0,2}"></label><button>Сұрақты жіберу</button></div></form></details>
+<h2>Оқушылардың жауаптары</h2><p id="teacherTotal"></p>
+<table><thead><tr><th scope="col">Оқушы</th><th scope="col">Жауап</th></tr></thead><tbody id="responses"></tbody></table>
+<p><button id="reveal" class="secondary">Қабылдауды аяқтап, нәтижені тақтаға шығару</button></p>
+</div>
+</section>
+<section id="board" hidden><h1>Ортақ тақта</h1><div class="row"><button id="fullscreen" type="button" class="secondary">Толық экран</button><button id="toggleQr" type="button" class="secondary" aria-expanded="true" aria-controls="join" hidden>QR-ды жасыру</button></div>
+<aside id="join" hidden style="margin-bottom:1rem">
+<h2>Оқушы экраны</h2>
+<p>Тақтамен бірге көру үшін оқушы экранын осы браузердің басқа қойындысында аш.</p>
+<div class="row"><img id="joinQr" hidden width="208" height="208" alt="Оқушы экранына қосылу QR-коды"><a id="joinLink" target="_blank" rel="noopener" style="overflow-wrap:anywhere;color:inherit"></a></div>
+</aside></section>
+<section id="student" hidden>
+<h1>Оқушы экраны</h1>
+<label for="name">Атың немесе мұғалім берген лақап атың</label><input id="name" maxlength="40" autocomplete="off">
+<h2>Қолжетімділік</h2>
+<div class="row" id="settings"><button class="secondary" aria-pressed="false" data-setting="large">Ірі мәтін</button><button class="secondary" aria-pressed="false" data-setting="contrast">Жоғары контраст</button><button class="secondary" aria-pressed="false" data-setting="steps">Қадаммен оқу</button></div>
+</section>
+<p id="waiting">Мұғалім сұрақ жібергенде осы жерде ашылады.</p>
+<section id="task" hidden>
+<h2 id="taskTitle">Бөлшектерді салыстыр</h2><div id="explanationText" hidden><p id="explanationIntro"></p><ol id="explanationSteps"></ol><button type="button" id="nextStep" class="secondary" hidden>Келесі қадам</button></div>
+<p id="instruction">Бос орынға тиісті белгіні таңда.</p>
+<ol id="steps" hidden><li>Сол жақтағы және оң жақтағы бөлшекті салыстыр.</li><li>Кіші, тең немесе үлкен белгісін таңда.</li></ol>
+<div class="equation" id="equation"></div>
+<div id="studentActions" hidden>
+<button id="listen" class="secondary">Тапсырманы тыңдау</button>
+<button id="signDemo" class="secondary" aria-expanded="false" aria-controls="signPanel">Ым тілінде көру · демо</button>
+<div id="signPanel" hidden style="margin:1rem 0;padding:1rem;border:2px solid currentColor;border-radius:1rem">
+<strong>Ым тілі бейнесінің имитациясы</strong>
+<p>Бұл демо бейне ойнатқыштың орнын көрсетеді. Нақты ым тілі аудармасы тіркелгенде осы жерде ашылады.</p>
+<p id="signCaption" aria-live="polite"></p>
+<button id="signNext" class="secondary">Келесі кадр</button>
+</div>
+<p id="choosePrompt">Жауабыңды таңда.</p>
+<div class="row choices" id="choices"><button value="<"><b aria-hidden="true">&lt;</b>Кіші</button><button value="="><b aria-hidden="true">=</b>Тең</button><button value=">"><b aria-hidden="true">&gt;</b>Үлкен</button></div>
+</div>
+<div id="boardResults" hidden><p id="total" role="status"></p><p id="counts" hidden></p></div>
+</section>
+<p id="status" role="status"></p>
+</main>
+<script src="/demo.js"></script><script src="/app.js"></script>
+</html>
+
+
+
+
+
+
+
+
+
+
